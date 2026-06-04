@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.niord</groupId>
+    <artifactId>niord-josm-seachart</artifactId>
+    <version>0.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Niord JOSM Seachart Library</name>
+    <description>
+        A standalone Maven build of the JOSM seachart rendering code (render, s57 and symbols
+        packages) used by Niord for generating AtoN icons. Extracted from the niord mono-repo so
+        it can be consumed as a versioned JitPack artifact.
+    </description>
+    <url>https://github.com/NiordOrg/josm-seachart</url>
+    <inceptionYear>2014</inceptionYear>
+
+    <!--
+        The bundled JOSM seachart code (render, s57, symbols packages) is licensed under the
+        GNU General Public License v3 (Copyright Malcolm Herring), so the combined distributable
+        artifact is GPL-3.0-only. The single Niord-authored glue file, SeachartException.java,
+        is additionally available under the Apache License 2.0 (Copyright Danish Maritime Authority).
+    -->
+    <licenses>
+        <license>
+            <name>GNU General Public License v3.0 only</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <!-- Java -->
+        <java.version>21</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Dependency versions -->
+        <batik.version>1.16</batik.version>
+
+        <!-- Plugin versions -->
+        <version.plugin.compiler>3.13.0</version.plugin.compiler>
+        <version.plugin.source>3.3.0</version.plugin.source>
+        <version.plugin.surefire>3.1.2</version.plugin.surefire>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-transcoder</artifactId>
+            <version>${batik.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>${batik.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.plugin.compiler}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.plugin.surefire}</version>
+            </plugin>
+
+            <!-- Attach a sources jar so JitPack consumers get sources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${version.plugin.source}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
